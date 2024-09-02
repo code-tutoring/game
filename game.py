@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 pygame.init()
 
@@ -12,7 +13,6 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -38,7 +38,6 @@ class Player(pygame.sprite.Sprite):
         if self.rect.right > 800:
             self.rect.right = 800
 
-
 # Object class
 class Object(pygame.sprite.Sprite):
     def __init__(self):
@@ -57,7 +56,6 @@ class Object(pygame.sprite.Sprite):
             self.rect.y = random.randrange(-100, -40)
             self.speed = random.randint(2, 8)
 
-
 # Create groups for all sprites and objects
 all_sprites = pygame.sprite.Group()
 objects = pygame.sprite.Group()
@@ -75,6 +73,8 @@ for i in range(10):
 # Set the score
 score = 0
 
+# Initialize the start time
+start_time = time.time()
 
 # Function to draw text on the screen
 def draw_text(surf, text, size, x, y):
@@ -84,7 +84,6 @@ def draw_text(surf, text, size, x, y):
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
-
 
 # Game loop
 running = True
@@ -98,6 +97,10 @@ while running:
     # Update all sprites
     all_sprites.update()
 
+    # Calculate elapsed time
+    elapsed_time = time.time() - start_time
+    timer_text = "Time: {:.2f}".format(elapsed_time)
+
     # Check for collisions between the player and objects
     hits = pygame.sprite.spritecollide(player, objects, True)
     for hit in hits:
@@ -110,6 +113,7 @@ while running:
     screen.fill(black)
     all_sprites.draw(screen)
     draw_text(screen, "Score: {}".format(score), 18, 50, 10)
+    draw_text(screen, timer_text, 18, 750, 10)  # Display the timer in the top-right corner
 
     pygame.display.update()
 
