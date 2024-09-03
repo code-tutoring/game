@@ -1,13 +1,17 @@
-import pygame
-import random
-import time
+import pygame  # Import the pygame module to create the game
+import random  # Import random for generating random positions and speeds
+import time    # Import time to keep track of elapsed time in the game
 
+# Initialize Pygame
 pygame.init()
 
+# Set up the game window (width = 800, height = 600)
 screen = pygame.display.set_mode((800, 600))
+
+# Control the game's frame rate
 clock = pygame.time.Clock()
 
-# Colors
+# Define colors using RGB (Red, Green, Blue) values
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
@@ -18,49 +22,53 @@ green = (0, 255, 0)
 player_image = pygame.image.load("Assets/player.png")  # Replace with your player PNG path
 object_image = pygame.image.load("Assets/object.png")  # Replace with your object PNG path
 
-# Player class
+# Define the Player class, which represents the player-controlled character
 class Player(pygame.sprite.Sprite):
     def __init__(self):
-        super().__init__()
+        super().__init__() # Initialize the parent class (Sprite)
         self.image = pygame.transform.scale(player_image, (50, 50))  # Scale the image to fit
-        self.rect = self.image.get_rect()
-        self.rect.x = 375
-        self.rect.y = 500
-        self.speed = 5
+        self.rect = self.image.get_rect() # Get the rectangular area of the player image
+        self.rect.x = 375  # Initial horizontal position of the player
+        self.rect.y = 500  # Initial vertical position of the player
+        self.speed = 5  # Player's movement speed
 
+    # Update the player's position based on keyboard input
     def update(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.rect.x -= self.speed
-        if keys[pygame.K_RIGHT]:
-            self.rect.x += self.speed
+        keys = pygame.key.get_pressed()  # Get the current state of all keys
+        if keys[pygame.K_LEFT]:  # If the left arrow key is pressed
+            self.rect.x -= self.speed  # Move the player left
+        if keys[pygame.K_RIGHT]:  # If the right arrow key is pressed
+            self.rect.x += self.speed  # Move the player right
 
-        # Keep player within screen boundaries
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > 800:
-            self.rect.right = 800
+        # Prevent the player from moving off the screen
+        if self.rect.left < 0:  # If the player goes off the left side
+            self.rect.left = 0  # Stop at the left edge
+        if self.rect.right > 800:  # If the player goes off the right side
+            self.rect.right = 800  # Stop at the right edge
 
-# Object class
+# Define the Object class, which represents the falling objects
 class Object(pygame.sprite.Sprite):
     def __init__(self):
-        super().__init__()
-        self.image = pygame.transform.scale(object_image, (30, 30))  # Scale the image to fit
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(0, 750)
-        self.rect.y = random.randrange(-100, -40)
-        self.speed = random.randint(2, 8)
+        super().__init__()  # Initialize the parent class (Sprite)
+        self.image = pygame.transform.scale(object_image, (30, 30))  # Resize the object image
+        self.rect = self.image.get_rect()  # Get the rectangular area of the object image
+        self.rect.x = random.randrange(0, 750)  # Random horizontal starting position
+        self.rect.y = random.randrange(-100, -40)  # Random vertical starting position above the screen
+        self.speed = random.randint(2, 8)  # Random speed for the falling object
 
+
+    # Update the object's position
     def update(self):
-        self.rect.y += self.speed
-        if self.rect.top > 600:
-            self.kill()  # Remove the object when it goes off the screen
+        self.rect.y += self.speed  # Move the object down the screen
+        if self.rect.top > 600:  # If the object falls off the bottom of the screen
+            self.kill()  # Remove the object from the game
+
 
 # Create groups for all sprites and objects
 all_sprites = pygame.sprite.Group()
 objects = pygame.sprite.Group()
 
-# Create the player
+# Create the player and add to the all_sprites group
 player = Player()
 all_sprites.add(player)
 
@@ -72,70 +80,72 @@ start_time = time.time()
 
 # Function to draw text on the screen
 def draw_text(surf, text, size, x, y):
-    font_name = pygame.font.match_font("arial")
-    font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, white)
-    text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
-    surf.blit(text_surface, text_rect)
+    font_name = pygame.font.match_font("arial")  # Find a font similar to Arial
+    font = pygame.font.Font(font_name, size)  # Set the font size
+    text_surface = font.render(text, True, white)  # Create a text surface
+    text_rect = text_surface.get_rect()  # Get the rectangular area of the text
+    text_rect.midtop = (x, y)  # Position the text
+    surf.blit(text_surface, text_rect)  # Draw the text on the screen
 
-# Function to draw a button
+# Function to draw a button on the screen
 def draw_button(surf, text, x, y, w, h, inactive_color, active_color, action=None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+    mouse = pygame.mouse.get_pos()  # Get the current mouse position
+    click = pygame.mouse.get_pressed()  # Get the current mouse click state
 
+    # Check if the mouse is over the button
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(surf, active_color, (x, y, w, h))
-        if click[0] == 1 and action is not None:
-            action()
+        pygame.draw.rect(surf, active_color, (x, y, w, h))  # Draw the button in active color
+        if click[0] == 1 and action is not None:  # If the button is clicked
+            action()  # Call the action function
     else:
-        pygame.draw.rect(surf, inactive_color, (x, y, w, h))
+        pygame.draw.rect(surf, inactive_color, (x, y, w, h))  # Draw the button in inactive color
 
+    # Draw the text on the button
     draw_text(surf, text, 20, x + (w / 2), y + (h / 4))
 
-# Game functions for buttons
+# Define functions to handle game states
 def resume_game():
     global game_state
     game_state = "playing"
 
 def restart_game():
     global score, start_time, game_state, all_sprites, objects
-    score = 0
-    start_time = time.time()
-    all_sprites.empty()
-    objects.empty()
-    player = Player()
-    all_sprites.add(player)
-    game_state = "playing"
+    score = 0  # Reset the score to 0
+    start_time = time.time()  # Reset the start time
+    all_sprites.empty()  # Clear all sprites
+    objects.empty()  # Clear all objects
+    player = Player()  # Create a new player
+    all_sprites.add(player)  # Add the player to the sprites group
+    game_state = "playing"  # Set the game state to playing
 
 def quit_game():
     pygame.quit()
     quit()
 
-# Game loop
-game_state = "playing"
-last_spawn_time = time.time()
+# Main game loop
+game_state = "playing"  # Initial game state
+last_spawn_time = time.time()  # Time when the last object was spawned
 
 while True:
     clock.tick(60)
 
+    # Handle events like key presses or closing the game window
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            quit_game()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                if game_state == "playing":
-                    game_state = "paused"
-                elif game_state == "paused":
-                    resume_game()
+        if event.type == pygame.QUIT:  # If the user closes the window
+            quit_game()  # Quit the game
+        if event.type == pygame.KEYDOWN:  # If a key is pressed
+            if event.key == pygame.K_ESCAPE:  # If the ESC key is pressed
+                if game_state == "playing":  # If the game is currently playing
+                    game_state = "paused"  # Pause the game
+                elif game_state == "paused":  # If the game is paused
+                    resume_game()  # Resume the game
 
-    if game_state == "playing":
-        # Update all sprites
-        all_sprites.update()
+    if game_state == "playing":  # If the game is in the playing state
+        all_sprites.update()  # Update all sprites (player and objects)
 
-        # Calculate elapsed time
+        # Calculate how much time has passed since the game started
         elapsed_time = time.time() - start_time
-        timer_text = "Time: {:.2f}".format(elapsed_time)
+        timer_text = "Time: {:.2f}".format(elapsed_time)  # Format the elapsed time
 
         # Constantly spawn new objects at more frequent intervals
         current_time = time.time()
