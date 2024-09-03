@@ -11,7 +11,6 @@ clock = pygame.time.Clock()
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
-green = (0, 255, 0)
 blue = (0, 0, 255)
 
 # Player class
@@ -52,9 +51,7 @@ class Object(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += self.speed
         if self.rect.top > 600:
-            self.rect.x = random.randrange(0, 750)
-            self.rect.y = random.randrange(-100, -40)
-            self.speed = random.randint(2, 8)
+            self.kill()  # Remove the object when it goes off the screen
 
 # Create groups for all sprites and objects
 all_sprites = pygame.sprite.Group()
@@ -63,12 +60,6 @@ objects = pygame.sprite.Group()
 # Create the player
 player = Player()
 all_sprites.add(player)
-
-# Create the objects
-for i in range(10):
-    obj = Object()
-    all_sprites.add(obj)
-    objects.add(obj)
 
 # Set the score
 score = 0
@@ -87,6 +78,8 @@ def draw_text(surf, text, size, x, y):
 
 # Game loop
 running = True
+last_spawn_time = time.time()
+
 while running:
     clock.tick(60)
 
@@ -101,19 +94,24 @@ while running:
     elapsed_time = time.time() - start_time
     timer_text = "Time: {:.2f}".format(elapsed_time)
 
+    # Constantly spawn new objects at more frequent intervals
+    current_time = time.time()
+    if current_time - last_spawn_time > random.uniform(0.1, 0.5):  # Random spawn interval between 0.1 and 0.5 seconds
+        obj = Object()
+        all_sprites.add(obj)
+        objects.add(obj)
+        last_spawn_time = current_time
+
     # Check for collisions between the player and objects
     hits = pygame.sprite.spritecollide(player, objects, True)
     for hit in hits:
         score += 1
-        obj = Object()
-        all_sprites.add(obj)
-        objects.add(obj)
 
     # Draw everything on the screen
     screen.fill(black)
     all_sprites.draw(screen)
     draw_text(screen, "Score: {}".format(score), 18, 50, 10)
-    draw_text(screen, timer_text, 18, 750, 10)  # Display the timer in the top-right corner
+    draw_text(screen, timer_text, 18, 750, 10)
 
     pygame.display.update()
 
