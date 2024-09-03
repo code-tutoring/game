@@ -15,8 +15,8 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 
 # Load images
-player_image = pygame.image.load("Assets/player.png")
-object_image = pygame.image.load("Assets/object.png")
+player_image = pygame.image.load("Assets/player.png")  # Replace with your player PNG path
+object_image = pygame.image.load("Assets/object.png")  # Replace with your object PNG path
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -164,3 +164,4 @@ while True:
         draw_button(screen, "Quit", 300, 440, 200, 50, red, green, quit_game)
 
     pygame.display.update()
+
