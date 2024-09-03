@@ -13,12 +13,15 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
 
+# Load images
+player_image = pygame.image.load("Assets/player.png")  # Replace with your player PNG path
+object_image = pygame.image.load("Assets/object.png")  # Replace with your object PNG path
+
 # Player class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface([50, 50])
-        self.image.fill(red)
+        self.image = pygame.transform.scale(player_image, (50, 50))  # Scale the image to fit
         self.rect = self.image.get_rect()
         self.rect.x = 375
         self.rect.y = 500
@@ -41,8 +44,7 @@ class Player(pygame.sprite.Sprite):
 class Object(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface([30, 30])
-        self.image.fill(blue)
+        self.image = pygame.transform.scale(object_image, (30, 30))  # Scale the image to fit
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 750)
         self.rect.y = random.randrange(-100, -40)
@@ -111,7 +113,7 @@ while running:
     screen.fill(black)
     all_sprites.draw(screen)
     draw_text(screen, "Score: {}".format(score), 18, 50, 10)
-    draw_text(screen, timer_text, 18, 750, 10)
+    draw_text(screen, timer_text, 18, 750, 10)  # Display the timer in the top-right corner
 
     pygame.display.update()
 
