@@ -1,6 +1,8 @@
 import pygame  # Import the pygame module to create the game
 import random  # Import random for generating random positions and speeds
 import time    # Import time to keep track of elapsed time in the game
+from player import Player
+from object import Object
 
 # Initialize Pygame
 pygame.init()
@@ -17,52 +19,6 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
 green = (0, 255, 0)
-
-# Load images
-player_image = pygame.image.load("Assets/player.png")  # Replace with your player PNG path
-object_image = pygame.image.load("Assets/object.png")  # Replace with your object PNG path
-
-# Define the Player class, which represents the player-controlled character
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__() # Initialize the parent class (Sprite)
-        self.image = pygame.transform.scale(player_image, (50, 50))  # Scale the image to fit
-        self.rect = self.image.get_rect() # Get the rectangular area of the player image
-        self.rect.x = 375  # Initial horizontal position of the player
-        self.rect.y = 500  # Initial vertical position of the player
-        self.speed = 5  # Player's movement speed
-
-    # Update the player's position based on keyboard input
-    def update(self):
-        keys = pygame.key.get_pressed()  # Get the current state of all keys
-        if keys[pygame.K_LEFT]:  # If the left arrow key is pressed
-            self.rect.x -= self.speed  # Move the player left
-        if keys[pygame.K_RIGHT]:  # If the right arrow key is pressed
-            self.rect.x += self.speed  # Move the player right
-
-        # Prevent the player from moving off the screen
-        if self.rect.left < 0:  # If the player goes off the left side
-            self.rect.left = 0  # Stop at the left edge
-        if self.rect.right > 800:  # If the player goes off the right side
-            self.rect.right = 800  # Stop at the right edge
-
-# Define the Object class, which represents the falling objects
-class Object(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()  # Initialize the parent class (Sprite)
-        self.image = pygame.transform.scale(object_image, (30, 30))  # Resize the object image
-        self.rect = self.image.get_rect()  # Get the rectangular area of the object image
-        self.rect.x = random.randrange(0, 750)  # Random horizontal starting position
-        self.rect.y = random.randrange(-100, -40)  # Random vertical starting position above the screen
-        self.speed = random.randint(2, 8)  # Random speed for the falling object
-
-
-    # Update the object's position
-    def update(self):
-        self.rect.y += self.speed  # Move the object down the screen
-        if self.rect.top > 600:  # If the object falls off the bottom of the screen
-            self.kill()  # Remove the object from the game
-
 
 # Create groups for all sprites and objects
 all_sprites = pygame.sprite.Group()
