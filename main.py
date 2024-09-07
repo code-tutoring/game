@@ -62,7 +62,11 @@ def draw_button(surf, text, x, y, w, h, inactive_color, active_color, action=Non
 # Define functions to handle game states
 def resume_game():
     global game_state
+    global start_time
+    global paused_time
     game_state = "playing"
+    paused_time = time.time() - paused_time
+    start_time += paused_time
 
 def restart_game():
     global score, start_time, game_state, all_sprites, objects
@@ -82,6 +86,8 @@ def quit_game():
 game_state = "playing"  # Initial game state
 last_spawn_time = time.time()  # Time when the last object was spawned
 
+paused_time = 0
+
 while True:
     clock.tick(60)
 
@@ -93,6 +99,7 @@ while True:
             if event.key == pygame.K_ESCAPE:  # If the ESC key is pressed
                 if game_state == "playing":  # If the game is currently playing
                     game_state = "paused"  # Pause the game
+                    paused_time = time.time()
                 elif game_state == "paused":  # If the game is paused
                     resume_game()  # Resume the game
 
