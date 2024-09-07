@@ -112,7 +112,7 @@ while True:
 
         # Constantly spawn new objects at more frequent intervals
         current_time = time.time()
-        if current_time - last_spawn_time > random.uniform(0.1, 0.5):  # Random spawn interval between 0.1 and 0.5 seconds
+        if current_time - last_spawn_time > random.uniform(0.3, 1):  # Random spawn interval between 0.3 and 1 second
             obj = Object()
             all_sprites.add(obj)
             objects.add(obj)
