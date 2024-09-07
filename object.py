@@ -12,7 +12,7 @@ class Object(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()  # Get the rectangular area of the object image
         self.rect.x = random.randrange(0, 750)  # Random horizontal starting position
         self.rect.y = random.randrange(-100, -40)  # Random vertical starting position above the screen
-        self.speed = random.randint(2, 8)  # Random speed for the falling object
+        self.speed = random.randint(2, 5)  # Random speed for the falling object
 
 
     # Update the object's position
