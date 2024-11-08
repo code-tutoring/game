@@ -20,6 +20,10 @@ red = (255, 0, 0)
 blue = (0, 0, 255)
 green = (0, 255, 0)
 
+# Caption the name of the game
+pygame.display.set_caption("Catch the coins!")
+
+
 # Create groups for all sprites and objects
 all_sprites = pygame.sprite.Group()
 objects = pygame.sprite.Group()
